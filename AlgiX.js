@@ -30,7 +30,7 @@ if (inputarg >= 0) {
     state.ready = true;
 } else {
     emit("STDIN input support coming soon");
-    process.exit(1);
+    emit("Defaulting input to '0'");
 }
 
 state.isDbg = process.argv.includes('-d');
@@ -52,12 +52,6 @@ function emit(msg) {
     process.stderr.write(msg + "\n");
 }
 
-
-emit("Waiting for input");
-while(!state.ready) {emit(state.ready)}
-
-emit("Received input");
-
 for (state.inputIndex = 0; state.inputIndex < input.length; state.inputIndex++) {
     let i = input[state.inputIndex];
     accu = i.charCodeAt(0);
@@ -67,13 +61,15 @@ for (state.inputIndex = 0; state.inputIndex < input.length; state.inputIndex++) 
         let c = code[state.codeIndex];
         if (state.skip && c !== state.skip) continue;
         state.skip = false;
+        debug("Char: " + c);
         if (codeMap[c]) {
             x = codeMap[c](accu, state);
             if (typeof(x) === "number") accu = x;
+            debug("Accu: " + accu);
         }
         else error("Invalid char: " + c);
     }
 
-    process.stdout.write(state.char ? String.fromCharCode(accu) : accu.toString());
+    process.stdout.write(state.char ? String.fromCharCode(Math.floor(accu)) : accu.toString());
     state.inputIndex++;
 }
