@@ -1,12 +1,16 @@
 const fs = require('fs');
 const codeMap = require('./charMap.js');
 
-let code = process.argv[2];
-let input = process.argv[3];
-if (code === "-f") {
-    code = fs.readFileSync(process.argv[3]);
-    input = process.argv[4];
-}
+let codearg = process.argv.indexOf('-f');
+let inputarg = process.argv.indexOf('-i');
+
+if (codearg < 0) throw new Error("Could not find -f argument");
+
+emit("Reading " + process.argv[codearg + 1]);
+let code = fs.readFileSync(process.argv[codearg + 1], 'utf8');
+emit("Code is: '" + code + "'");
+let input = "0";
+if (inputarg >= 0) input = process.argv[inputarg + 1];
 
 let accu = 0;
 
@@ -16,8 +20,13 @@ var state = {
     inputIndex: 1,
     codeIndex: 1,
     error: error,
-    debug: debug
+    debug: debug,
+    isDbg: false,
+    char: true
 };
+
+state.isDbg = process.argv.includes('-d');
+state.char = !process.argv.includes('-x')
 
 function error(msg) {
     console.log(code);
@@ -28,7 +37,11 @@ function error(msg) {
     process.exit(1);
 }
 function debug(msg) {
-    console.log("Debug: " + msg);
+    if (!state.isDbg) return;
+    process.stderr.write("Debug: " + msg + "\n");
+}
+function emit(msg) {
+    process.stderr.write(msg + "\n");
 }
 
 for (state.inputIndex = 0; state.inputIndex < input.length; state.inputIndex++) {
@@ -47,6 +60,6 @@ for (state.inputIndex = 0; state.inputIndex < input.length; state.inputIndex++) 
         else error("Invalid char: " + c);
     }
 
-    process.stdout.write(String.fromCharCode(accu));
+    process.stdout.write(state.char ? String.fromCharCode(accu) : accu.toString());
     state.inputIndex++;
 }
