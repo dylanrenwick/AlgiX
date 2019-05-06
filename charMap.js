@@ -10,4 +10,5 @@ module.exports = {
     '.': (a, s) => process.stdout.write(a.toString()),
     '>': (a, s) => { s.inputIndex++; s.codeIndex = 0; },
     '<': (a, s) => { s.inputIndex--; s.codeIndex = 0; },
+    '0': (a, s) => 0
 };

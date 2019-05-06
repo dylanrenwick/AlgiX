@@ -39,3 +39,4 @@ Optional args:
 | `.` |                                                                                                                 | Print `a` as a numerical value                       |
 | `>` |                                                                                                                 | Immediately skip to the next input value             |
 | `<` |                                                                                                                 | Immediately jump back to the previous input value    |
+| `0` | Set `a` to 0                                                                                                    |                                                      |
