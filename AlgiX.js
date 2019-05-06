@@ -9,35 +9,44 @@ if (code === "-f") {
 }
 
 let accu = 0;
-var inputIndex = 1;
-var codeIndex = 1;
-var skip = false;
-var lastOpen = -1;
+
+var state = {
+    lastOpen: -1,
+    skip: false,
+    inputIndex: 1,
+    codeIndex: 1,
+    error: error,
+    debug: debug
+};
 
 function error(msg) {
     console.log(code);
 
     console.log(msg)
-    console.log("On input " + inputIndex + " at char " + codeIndex);
+    console.log("On input " + state.inputIndex + " at char " + state.codeIndex);
 
     process.exit(1);
 }
+function debug(msg) {
+    console.log("Debug: " + msg);
+}
 
-for (let i of input) {
+for (state.inputIndex = 0; state.inputIndex < input.length; state.inputIndex++) {
+    let i = input[state.inputIndex];
     accu = i.charCodeAt(0);
     if (!Number.isNaN(x = parseInt(i))) accu = x;
 
-    for (let codeIndex = 0; codeIndex < code.length; codeIndex++) {
-        let c = code[codeIndex];
-        if (skip && c !== skip) continue;
-        skip = false;
+    for (state.codeIndex = 0; state.codeIndex < code.length; state.codeIndex++) {
+        let c = code[state.codeIndex];
+        if (state.skip && c !== state.skip) continue;
+        state.skip = false;
         if (codeMap[c]) {
-            x = codeMap[c](accu);
+            x = codeMap[c](accu, state);
             if (typeof(x) === "number") accu = x;
         }
         else error("Invalid char: " + c);
     }
 
     process.stdout.write(String.fromCharCode(accu));
-    inputIndex++;
+    state.inputIndex++;
 }
