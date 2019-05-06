@@ -8,6 +8,22 @@ At runtime, input is automatically read, and each non-numerical character in inp
 Then for each value `x` in input, the accumulator is set to `x`, and the entire program is ran.  
 Upon termination, the accumulator's value is converted back to a character and writen to STDOUT.
 
+## Usage
+
+AlgiX is written in node, so you will need node installed. It was developed using node 10.15.3, but should work on most versions.
+
+Usage:  
+`node AlgiX.js [options] -f <filename> -i <inputFile> [options]`
+
+Optional args:
+
+| X  | Purpose                                                                        |
+|----|--------------------------------------------------------------------------------|
+| -x | Changes implicit output of each input to numerical value rather than character |
+| -d | Shows additional debug info in STDERR                                          |
+
+**Note:** If no input file is given, and no input is given via STDIN, input is assumed to be `"0"`
+
 ## Operators
 
 | X   | Modification of `a`                                                                                             | Side effects                                         |

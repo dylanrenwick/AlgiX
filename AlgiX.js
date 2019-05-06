@@ -1,6 +1,20 @@
 const fs = require('fs');
 const codeMap = require('./charMap.js');
 
+let accu = 0;
+
+const state = {
+    lastOpen: -1,
+    skip: false,
+    inputIndex: 1,
+    codeIndex: 1,
+    error: error,
+    debug: debug,
+    isDbg: false,
+    char: true,
+    ready: true
+};
+
 let codearg = process.argv.indexOf('-f');
 let inputarg = process.argv.indexOf('-i');
 
@@ -10,20 +24,14 @@ emit("Reading " + process.argv[codearg + 1]);
 let code = fs.readFileSync(process.argv[codearg + 1], 'utf8');
 emit("Code is: '" + code + "'");
 let input = "0";
-if (inputarg >= 0) input = process.argv[inputarg + 1];
-
-let accu = 0;
-
-var state = {
-    lastOpen: -1,
-    skip: false,
-    inputIndex: 1,
-    codeIndex: 1,
-    error: error,
-    debug: debug,
-    isDbg: false,
-    char: true
-};
+if (inputarg >= 0) {
+    input = process.argv[inputarg + 1];
+    emit("Input is: '" + input + "'");
+    state.ready = true;
+} else {
+    emit("STDIN input support coming soon");
+    process.exit(1);
+}
 
 state.isDbg = process.argv.includes('-d');
 state.char = !process.argv.includes('-x')
@@ -43,6 +51,12 @@ function debug(msg) {
 function emit(msg) {
     process.stderr.write(msg + "\n");
 }
+
+
+emit("Waiting for input");
+while(!state.ready) {emit(state.ready)}
+
+emit("Received input");
 
 for (state.inputIndex = 0; state.inputIndex < input.length; state.inputIndex++) {
     let i = input[state.inputIndex];
